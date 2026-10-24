@@ -1,0 +1,129 @@
+<div class="page">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Bookshelf home">
+      <span class="brand-icon">B</span>
+      <span>Bookshelf</span>
+    </a>
+    <span class="top-note">Kaplan test preparation catalogue</span>
+  </header>
+
+  <main class="content">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">BOOK CATALOGUE</p>
+        <h1>Find your next<br /><span>study resource.</span></h1>
+        <p class="subheading">
+          Explore titles, authors, and study resources.
+        </p>
+      </div>
+      <div class="count">
+        <strong>{{ books.length }}</strong>
+        <span>records displayed</span>
+      </div>
+    </section>
+
+    <label class="search">
+      <span aria-hidden="true">⌕</span>
+      <input
+        type="search"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search by title, author, publisher or category"
+        aria-label="Search books"
+      />
+      <span class="search-label">SEARCH</span>
+    </label>
+
+    <div class="list-heading">
+      <span>BOOKS</span>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">
+      <span class="spinner"></span>
+      Loading books...
+    </div>
+
+    <section class="message" *ngIf="!isLoading && errorMessage">
+      <h2>Unable to load books</h2>
+      <p>{{ errorMessage }}</p>
+      <button type="button" (click)="onSearchChange()">Try again</button>
+    </section>
+
+    <section class="message" *ngIf="!isLoading && !errorMessage && books.length === 0">
+      <h2>No books found</h2>
+      <p>Try another title, author, publisher or category.</p>
+    </section>
+
+    <section class="book-grid" *ngIf="!isLoading && !errorMessage && books.length > 0">
+      <article class="book-card" *ngFor="let book of books; trackBy: trackById">
+        <div class="cover">
+          <img
+            *ngIf="book.thumbnail"
+            [src]="book.thumbnail"
+            [alt]="'Cover of ' + book.title"
+            loading="lazy"
+          />
+          <span class="initials" *ngIf="!book.thumbnail">
+            {{ getInitials(book.title) }}
+          </span>
+          <span class="cover-caption">BOOK</span>
+        </div>
+
+        <div class="book-info">
+          <div class="meta">
+            <span>{{ book.categories[0] || 'Study resource' }}</span>
+            <span *ngIf="book.pageCount">{{ book.pageCount }} pages</span>
+          </div>
+
+          <h2>{{ book.title }}</h2>
+          <p class="subtitle" *ngIf="book.subtitle">{{ book.subtitle }}</p>
+          <p class="authors">{{ book.authors.length ? book.authors.join(', ') : 'Author not listed' }}</p>
+
+          <p class="book-description" *ngIf="book.description">
+            {{ book.description }}
+          </p>
+
+          <div class="book-details">
+            <span>{{ book.publisher }}</span>
+            <span>{{ book.publishedDate }}</span>
+          </div>
+
+          <div class="book-actions">
+            <a
+              *ngIf="book.previewLink"
+              class="primary-button"
+              [href]="book.previewLink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Preview book
+            </a>
+            <a
+              *ngIf="book.infoLink"
+              class="secondary-button"
+              [href]="book.infoLink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Book details
+            </a>
+            <a
+              *ngIf="book.buyLink"
+              class="text-link"
+              [href]="book.buyLink"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Purchase
+            </a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <span>Explore study resources and book previews.</span>
+      <span>BOOKSHELF</span>
+    </footer>
+  </main>
+</div>
